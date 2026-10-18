@@ -1,0 +1,7 @@
+@model ProductDetailVM
+<div class="slider">
+    @foreach (var p in Model.RelatedProducts)
+    {
+        @Html.Partial("_ProductCard", p)
+    }
+</div>

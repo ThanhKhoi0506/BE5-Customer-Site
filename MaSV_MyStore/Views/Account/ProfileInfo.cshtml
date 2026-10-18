@@ -1,0 +1,45 @@
+@model ProfileInfoVM
+@{ ViewBag.Title = "Thông tin tài khoản"; }
+<h2>Thông tin tài khoản</h2>
+@if (TempData["Msg"] != null)
+{
+    <div class="alert-ok">@TempData["Msg"]</div>
+}
+<div class="two-col">
+    <section class="box">
+        <h3>Thông tin cá nhân</h3>
+        <p><b>Họ tên:</b> @Model.Profile.CustomerName</p>
+        <p><b>Tên đăng nhập:</b> @Model.Profile.Username</p>
+        <p><b>Số điện thoại:</b> @Model.Profile.CustomerPhone</p>
+        <p><b>Email:</b> @Model.Profile.CustomerEmail</p>
+        <p><b>Địa chỉ:</b> @Model.Profile.CustomerAddress</p>
+    </section>
+
+    <section class="box">
+        <h3>Cập nhật thông tin</h3>
+        @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <table class="form-table">
+                <tr><td>Số điện thoại</td><td>@Html.TextBoxFor(m => m.Profile.CustomerPhone)@Html.ValidationMessageFor(m => m.Profile.CustomerPhone, "", new { @class = "text-error" })</td></tr>
+                <tr><td>Email</td><td>@Html.TextBoxFor(m => m.Profile.CustomerEmail)@Html.ValidationMessageFor(m => m.Profile.CustomerEmail, "", new { @class = "text-error" })</td></tr>
+                <tr><td>Địa chỉ</td><td>@Html.TextBoxFor(m => m.Profile.CustomerAddress)@Html.ValidationMessageFor(m => m.Profile.CustomerAddress, "", new { @class = "text-error" })</td></tr>
+                <tr><td></td><td><button type="submit" class="btn btn-blue">Lưu thay đổi</button></td></tr>
+            </table>
+        }
+    </section>
+
+    <section class="box">
+        <h3>Đổi mật khẩu</h3>
+        @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <table class="form-table">
+                <tr><td>Mật khẩu hiện tại</td><td>@Html.PasswordFor(m => m.Password.OldPassword)@Html.ValidationMessageFor(m => m.Password.OldPassword, "", new { @class = "text-error" })</td></tr>
+                <tr><td>Mật khẩu mới</td><td>@Html.PasswordFor(m => m.Password.NewPassword)@Html.ValidationMessageFor(m => m.Password.NewPassword, "", new { @class = "text-error" })</td></tr>
+                <tr><td>Xác nhận</td><td>@Html.PasswordFor(m => m.Password.ConfirmNewPassword)@Html.ValidationMessageFor(m => m.Password.ConfirmNewPassword, "", new { @class = "text-error" })</td></tr>
+                <tr><td></td><td><button type="submit" class="btn btn-blue">Đổi mật khẩu</button></td></tr>
+            </table>
+        }
+    </section>
+</div>

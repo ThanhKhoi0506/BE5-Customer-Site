@@ -1,0 +1,14 @@
+@model HomeProductVM
+<section>
+    <h3 class="section-title">Sản phẩm nổi bật</h3>
+    @if (Model.FeaturedProducts.Count == 0)
+    {
+        <p class="center">Không tìm thấy sản phẩm phù hợp.</p>
+    }
+    <div class="slider">
+        @foreach (var p in Model.FeaturedProducts)
+        {
+            @Html.Partial("_ProductCard", p)
+        }
+    </div>
+</section>

@@ -1,0 +1,13 @@
+@model HomeProductVM
+<section>
+    <h3 class="section-title">Sản phẩm mới</h3>
+    <div class="grid">
+        @foreach (var p in Model.NewProducts)
+        {
+            @Html.Partial("_ProductCard", p)
+        }
+    </div>
+    <div class="pager">
+        @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", new { page = page, searchTerm = Model.SearchTerm }))
+    </div>
+</section>

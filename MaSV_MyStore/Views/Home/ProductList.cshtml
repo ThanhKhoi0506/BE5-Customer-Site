@@ -1,0 +1,13 @@
+@model ProductListVM
+@{ ViewBag.Title = Model.Category.CategoryName; }
+<h2>@Model.Category.CategoryName</h2>
+<p>@Model.Category.Description</p>
+<div class="grid">
+    @foreach (var p in Model.Products)
+    {
+        @Html.Partial("_ProductCard", p)
+    }
+</div>
+<div class="pager">
+    @Html.PagedListPager(Model.Products, page => Url.Action("ProductList", new { id = Model.Category.CategoryID, page = page }))
+</div>

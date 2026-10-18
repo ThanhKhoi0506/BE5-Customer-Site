@@ -1,0 +1,54 @@
+@model MyOrderVM
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    string[] statuses = new string[] { "Chờ thanh toán", "Đang xử lý", "Đang vận chuyển", "Đã giao", "Đã hủy" };
+}
+<h2>Đơn hàng của tôi</h2>
+
+<div class="tabs">
+    <a class="@(string.IsNullOrEmpty(Model.Status) ? "active" : "")" href="@Url.Action("MyOrder", new { search = Model.Search })">Tất cả đơn</a>
+    @foreach (var s in statuses)
+    {
+        <a class="@(Model.Status == s ? "active" : "")" href="@Url.Action("MyOrder", new { status = s, search = Model.Search })">@s</a>
+    }
+</div>
+
+@using (Html.BeginForm("MyOrder", "Order", FormMethod.Get, new { @class = "order-search" }))
+{
+    <input type="hidden" name="status" value="@Model.Status" />
+    <input type="text" name="search" value="@Model.Search" placeholder="Tìm theo mã đơn hàng hoặc tên sản phẩm" />
+    <button type="submit" class="btn btn-blue">Tìm đơn hàng</button>
+}
+
+@if (Model.Orders.Count == 0)
+{
+    <div class="box center">Không có đơn hàng nào.</div>
+}
+
+@* Tab "Tất cả đơn": gom nhóm theo trạng thái; các tab còn lại: một nhóm *@
+@foreach (var grp in Model.Orders.GroupBy(o => o.OrderStatus))
+{
+    <h3 class="status-title">@grp.Key</h3>
+    foreach (var o in grp)
+    {
+        <div class="box order-box">
+            <div class="muted">Đơn #@o.OrderID - @o.OrderDate.ToString("dd/MM/yyyy HH:mm") - @o.PaymentMethod</div>
+            @foreach (var d in o.OrderDetails)
+            {
+                <div class="order-line">
+                    <img src="~/Content/images/products/@d.Product.ProductImage" alt="" />
+                    <span class="grow">@d.Product.ProductName <span class="muted">x@d.Quantity</span></span>
+                    <span>@d.TotalPrice.ToString("N0") đ</span>
+                </div>
+            }
+            <div class="order-foot">
+                <span>Tổng tiền: <b class="red">@o.TotalAmount.ToString("N0") đ</b></span>
+                @using (Html.BeginForm("Reorder", "Order", new { id = o.OrderID }, FormMethod.Post, new { @class = "inline" }))
+                {
+                    <button type="submit" class="btn-mini">Mua lại</button>
+                }
+                <a class="btn-mini" href="@Url.Action("OrderSuccess", "Order", new { id = o.OrderID })">Xem chi tiết</a>
+            </div>
+        </div>
+    }
+}

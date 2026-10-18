@@ -1,0 +1,24 @@
+@model PersonalMenuVM
+<nav class="personal-menu">
+    <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+    <div class="dropdown">
+        @if (Model.IsLoggedIn)
+        {
+            <a href="#" class="dd-toggle">Hello, @Model.Username &#9662;</a>
+            <div class="dd-menu right">
+                <a href="@Url.Action("ProfileInfo", "Account")">Thông tin tài khoản</a>
+                <a href="@Url.Action("MyOrder", "Order")">Lịch sử mua hàng</a>
+                <a href="@Url.Action("Logout", "Account")">Đăng xuất</a>
+            </div>
+        }
+        else
+        {
+            <a href="#" class="dd-toggle">Tài khoản &#9662;</a>
+            <div class="dd-menu right">
+                <a href="@Url.Action("Register", "Account")">Đăng ký</a>
+                <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+            </div>
+        }
+    </div>
+    <a href="@Url.Action("Index", "Cart")">&#128722; Giỏ hàng (@Model.CartCount)</a>
+</nav>

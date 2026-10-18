@@ -1,0 +1,18 @@
+@model LoginVM
+@{ ViewBag.Title = "Đăng nhập"; }
+<div class="form-page narrow">
+    <h2>Đăng nhập</h2>
+    @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-error" })
+        <table class="form-table">
+            <tr><td>@Html.LabelFor(m => m.Username)</td><td>@Html.TextBoxFor(m => m.Username)@Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-error" })</td></tr>
+            <tr><td>@Html.LabelFor(m => m.Password)</td><td>@Html.PasswordFor(m => m.Password)@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-error" })</td></tr>
+            <tr><td></td><td><label>@Html.CheckBoxFor(m => m.RememberMe) Ghi nhớ đăng nhập</label></td></tr>
+            <tr><td></td><td><button type="submit" class="btn btn-blue">Đăng nhập</button></td></tr>
+        </table>
+        <p>Bạn chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký ngay</a></p>
+        <p class="hint">Tài khoản mẫu: <b>demo</b> / <b>123456</b></p>
+    }
+</div>

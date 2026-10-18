@@ -1,0 +1,9 @@
+@model Product
+<div class="p-card">
+    <a href="@Url.Action("ProductDetail", "Home", new { id = Model.ProductID })">
+        <img src="~/Content/images/products/@Model.ProductImage" alt="@Model.ProductName" />
+        <div class="p-price">@Model.Price.ToString("N0") VND</div>
+        <div class="p-name">@Model.ProductName</div>
+    </a>
+    <div class="p-sold">Đã bán: @Model.SoldCount</div>
+</div>

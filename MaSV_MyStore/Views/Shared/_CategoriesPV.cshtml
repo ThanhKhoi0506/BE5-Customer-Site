@@ -1,0 +1,12 @@
+@model List<Category>
+<nav class="cat-menu">
+    <div class="dropdown">
+        <a href="#" class="dd-toggle">&#9776; Danh mục</a>
+        <div class="dd-menu">
+            @foreach (var c in Model)
+            {
+                <a href="@Url.Action("ProductList", "Home", new { id = c.CategoryID })">@c.CategoryName</a>
+            }
+        </div>
+    </div>
+</nav>

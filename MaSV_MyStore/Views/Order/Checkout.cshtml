@@ -1,0 +1,72 @@
+@model CheckoutVM
+@{ ViewBag.Title = "Thanh toán"; }
+<h2>Thanh toán</h2>
+@using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { id = "checkoutForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="checkout-layout">
+        <div>
+            <section class="box">
+                <h3>Chọn hình thức giao hàng</h3>
+                <label class="opt"><input type="radio" name="DeliveryMethod" value="Giao nhanh" @(Model.DeliveryMethod == "Giao nhanh" ? "checked=checked" : "") data-fee="26000" /> Giao nhanh (+26.000đ)</label>
+                <label class="opt"><input type="radio" name="DeliveryMethod" value="Giao tiết kiệm" @(Model.DeliveryMethod == "Giao tiết kiệm" ? "checked=checked" : "") data-fee="20000" /> Giao tiết kiệm (+20.000đ)</label>
+                @Html.ValidationMessageFor(m => m.DeliveryMethod, "", new { @class = "text-error" })
+            </section>
+
+            <section class="box">
+                <h3>Chọn hình thức thanh toán</h3>
+                <label class="opt"><input type="radio" name="PaymentMethod" value="COD" @(Model.PaymentMethod == "COD" ? "checked=checked" : "") /> Thanh toán tiền mặt khi nhận hàng (COD)</label>
+                <label class="opt"><input type="radio" name="PaymentMethod" value="Chuyển khoản" @(Model.PaymentMethod == "Chuyển khoản" ? "checked=checked" : "") /> Chuyển khoản ngân hàng</label>
+                <label class="opt"><input type="radio" name="PaymentMethod" value="Ví điện tử" @(Model.PaymentMethod == "Ví điện tử" ? "checked=checked" : "") /> Ví điện tử (MoMo/ZaloPay)</label>
+                @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-error" })
+            </section>
+
+            <section class="box">
+                <h3>Giao tới</h3>
+                <p><b>@Model.CustomerName</b> - @Model.CustomerPhone</p>
+                <input type="text" id="ShippingAddress" name="ShippingAddress" value="@Model.ShippingAddress" readonly="readonly" class="wide" />
+                <button type="button" class="btn-mini" onclick="enableAddressEdit()">Chỉnh sửa</button>
+                <div id="newAddrBox" style="display:none;margin-top:8px">
+                    <input type="text" id="newShippingAddress" class="wide" placeholder="Nhập địa chỉ giao hàng mới" />
+                </div>
+                @Html.ValidationMessageFor(m => m.ShippingAddress, "", new { @class = "text-error" })
+            </section>
+        </div>
+
+        <aside class="box">
+            <h3>Đơn hàng</h3>
+            <table class="cart-table small">
+                @foreach (var i in Model.CartItems)
+                {
+                    <tr><td>@i.ProductName x @i.Quantity</td><td class="right">@i.TotalPrice.ToString("N0")</td></tr>
+                }
+            </table>
+            <div class="sum"><span>Tạm tính</span><span id="sub" data-v="@Model.SubTotal.ToString("0")">@Model.SubTotal.ToString("N0") đ</span></div>
+            <div class="sum"><span>Phí vận chuyển</span><span id="ship">@Model.ShippingFee.ToString("N0") đ</span></div>
+            <div class="sum total"><span>Tổng tiền</span><span id="grand">@Model.TotalAmount.ToString("N0") đ</span></div>
+            <button type="submit" class="btn btn-red block" onclick="updateShippingAddress()">Đặt hàng</button>
+        </aside>
+    </div>
+}
+
+@section scripts {
+    <script>
+        function enableAddressEdit() {
+            document.getElementById('newAddrBox').style.display = 'block';
+            document.getElementById('newShippingAddress').focus();
+        }
+        function updateShippingAddress() {
+            var n = document.getElementById('newShippingAddress').value.trim();
+            if (n) document.getElementById('ShippingAddress').value = n;
+        }
+        var radios = document.querySelectorAll('input[name=DeliveryMethod]');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].addEventListener('change', function () {
+                var fee = parseInt(this.getAttribute('data-fee'), 10);
+                var sub = parseInt(document.getElementById('sub').getAttribute('data-v'), 10);
+                document.getElementById('ship').textContent = fee.toLocaleString('vi-VN') + ' đ';
+                document.getElementById('grand').textContent = (sub + fee).toLocaleString('vi-VN') + ' đ';
+            });
+        }
+    </script>
+}

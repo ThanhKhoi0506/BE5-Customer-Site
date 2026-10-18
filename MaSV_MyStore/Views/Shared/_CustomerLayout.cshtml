@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - MyStore Gift Shop</title>
+    <link href="~/Content/myStyle/Site.css" rel="stylesheet" />
+    <link href="~/Content/myStyle/CustomerHome.css" rel="stylesheet" />
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="topbar">Free ship đơn từ 40k, giảm nhiều hơn cùng <b><i>FREESHIP XTRA</i></b></div>
+
+    <header class="header">
+        <a class="logo" href="@Url.Action("Index", "Home")">MY<span>STORE</span></a>
+        @Html.Action("CategoriesMenu", "Home")
+        @Html.Action("PersonalMenu", "Account")
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div>&copy; @DateTime.Now.Year - MyStore Gift Shop - Đề tài 22: Website bán Văn phòng phẩm &amp; Quà lưu niệm</div>
+        <div class="footer-right">
+            <a href="mailto:contact@mystore.vn">Contact</a><br />
+            Thành viên nhóm: MaSV_MyStore
+        </div>
+    </footer>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

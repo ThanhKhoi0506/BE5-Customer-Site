@@ -1,0 +1,46 @@
+@model ProductDetailVM
+@{
+    ViewBag.Title = Model.Product.ProductName;
+}
+@section styles { <link href="~/Content/myStyle/CustomerDetailProduct.css" rel="stylesheet" /> }
+
+<div class="detail">
+    <div class="detail-img"><img src="~/Content/images/products/@Model.Product.ProductImage" alt="@Model.Product.ProductName" /></div>
+    <div class="detail-info">
+        <h2>@Model.Product.ProductName</h2>
+        <p class="muted">Danh mục: <a href="@Url.Action("ProductList", "Home", new { id = Model.Product.CategoryID })">@Model.Product.Category.CategoryName</a> | Đã bán: @Model.Product.SoldCount</p>
+        <div class="detail-price">@Model.Product.Price.ToString("N0") VND</div>
+        <h4>Mô tả</h4>
+        <p>@Model.Product.ProductDescription</p>
+    </div>
+    <div class="detail-buy">
+        @using (Html.BeginForm("ProductDetail", "Home", new { id = Model.Product.ProductID }, FormMethod.Post))
+        {
+            <label>Số lượng</label>
+            <input type="number" id="qty" name="quantity" value="@Model.Quantity" min="1" max="99" />
+            <div class="muted">Tạm tính</div>
+            <div class="detail-total" id="total">@((Model.Product.Price * Model.Quantity).ToString("N0")) VND</div>
+            <button type="submit" class="btn btn-blue block">Thêm vào giỏ</button>
+            <button type="submit" name="buyNow" value="1" class="btn btn-red block">Mua ngay</button>
+        }
+    </div>
+</div>
+
+<h3 class="section-title">Sản phẩm tương tự</h3>
+@Html.Partial("_PVRelatedProduct", Model)
+
+<h3 class="section-title">Top Deals</h3>
+@Html.Partial("_PVTopProduct", Model)
+
+@section scripts {
+    <script>
+        (function () {
+            var price = @Model.Product.Price.ToString("0", System.Globalization.CultureInfo.InvariantCulture);
+            var qty = document.getElementById('qty'), total = document.getElementById('total');
+            qty.addEventListener('input', function () {
+                var q = parseInt(qty.value, 10); if (isNaN(q) || q < 1) q = 1;
+                total.textContent = (price * q).toLocaleString('vi-VN') + ' VND';
+            });
+        })();
+    </script>
+}

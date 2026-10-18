@@ -1,0 +1,10 @@
+@model ProductDetailVM
+<div class="grid">
+    @foreach (var p in Model.TopProducts)
+    {
+        @Html.Partial("_ProductCard", p)
+    }
+</div>
+<div class="pager">
+    @Html.PagedListPager(Model.TopProducts, page => Url.Action("ProductDetail", new { id = Model.Product.ProductID, page = page }))
+</div>

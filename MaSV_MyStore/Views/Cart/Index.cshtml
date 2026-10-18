@@ -1,0 +1,81 @@
+@model MaSV_MyStore.Models.ViewModel.Cart
+@{ ViewBag.Title = "Giỏ hàng"; }
+<h2>GIỎ HÀNG</h2>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="box center">
+        <p>Giỏ hàng của bạn đang trống.</p>
+        <a class="btn btn-orange" href="@Url.Action("Index", "Home")">Tiếp tục mua hàng</a>
+    </div>
+}
+else
+{
+    <div class="cart-layout">
+        <div class="cart-left">
+            @foreach (var group in Model.GroupedItems)
+            {
+                <h3 class="cart-cat">@group.Key</h3>
+                <table class="cart-table">
+                    <thead>
+                        <tr><th></th><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in group)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="chk" data-id="@item.ProductID" @(item.Selected ? "checked=checked" : "") /></td>
+                                <td class="cart-prod">
+                                    <img src="~/Content/images/products/@item.ProductImage" alt="" />
+                                    <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })">@item.ProductName</a>
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post, new { @class = "inline" }))
+                                    {
+                                        <input type="hidden" name="id" value="@item.ProductID" />
+                                        <input type="number" name="quantity" value="@item.Quantity" min="0" max="99" class="qty" />
+                                        <button type="submit" class="btn-mini">Cập nhật</button>
+                                    }
+                                </td>
+                                <td>@item.UnitPrice.ToString("N0")</td>
+                                <td>@item.TotalPrice.ToString("N0")</td>
+                                <td>
+                                    @using (Html.BeginForm("RemoveFromCart", "Cart", FormMethod.Post, new { @class = "inline" }))
+                                    {
+                                        <input type="hidden" name="id" value="@item.ProductID" />
+                                        <button type="submit" class="btn-mini danger" title="Xóa">&#128465;</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            <p><a href="@Url.Action("ClearCart", "Cart")" onclick="return confirm('Xóa hết giỏ hàng?');">Xóa hết giỏ hàng</a></p>
+        </div>
+
+        <aside class="cart-right box">
+            <div>Tổng giá trị: <b class="red" id="cartTotal">@Model.TotalValue.ToString("N0") VND</b></div>
+            <a class="btn btn-red block" href="@Url.Action("Checkout", "Order")">Mua hàng</a>
+        </aside>
+    </div>
+
+    <a class="btn btn-orange" href="@Url.Action("Index", "Home")">Tiếp tục mua hàng</a>
+
+    @Html.Partial("_PVSimilarProduct", Model)
+}
+
+@section scripts {
+    <script>
+        var boxes = document.querySelectorAll('.chk');
+        for (var i = 0; i < boxes.length; i++) {
+            boxes[i].addEventListener('change', function () {
+                var x = new XMLHttpRequest();
+                x.open('POST', '@Url.Action("ToggleSelect", "Cart")');
+                x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                x.onload = function () { try { document.getElementById('cartTotal').textContent = JSON.parse(x.responseText).total; } catch (e) { } };
+                x.send('id=' + this.getAttribute('data-id') + '&selected=' + this.checked);
+            });
+        }
+    </script>
+}

@@ -1,0 +1,6 @@
+.detail { display: grid; grid-template-columns: 240px 1fr 240px; gap: 20px; align-items: start; }
+.detail-img img { width: 100%; border: 1px solid #eee; }
+.detail-price { font-size: 24px; color: #d0021b; font-weight: bold; margin: 10px 0; }
+.detail-buy { border: 1px solid #e3e3e3; border-radius: 4px; padding: 14px; }
+.detail-total { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+@media (max-width: 900px) { .detail { grid-template-columns: 1fr; } }

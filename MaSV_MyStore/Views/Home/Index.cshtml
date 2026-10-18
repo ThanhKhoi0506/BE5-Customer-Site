@@ -1,0 +1,16 @@
+@model HomeProductVM
+@{ ViewBag.Title = "Trang chủ"; }
+
+<div class="banner"><img src="~/Content/images/banner.svg" alt="Banner" /></div>
+
+<section class="search-box">
+    <h3>Tìm kiếm sản phẩm</h3>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Nhập tên, mô tả hoặc danh mục sản phẩm" />
+        <button type="submit" class="btn btn-red">Tìm kiếm</button>
+    }
+</section>
+
+@Html.Partial("_PVFeatureProduct", Model)
+@Html.Partial("_PVNewProduct", Model)
